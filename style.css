@@ -1,0 +1,1109 @@
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111}
+body{display:flex;flex-direction:column}
+
+.top{height:52px;flex:0 0 52px;background:#050505;color:white;display:flex;justify-content:space-between;align-items:center;padding:0 15px;font-size:13px}
+.timer{text-align:center;line-height:1.25}
+.finish{background:#ffe2a0;color:#111;padding:10px 25px;border:0;border-radius:4px;font-weight:bold;cursor:pointer}
+.green{height:23px;flex:0 0 23px;background:#4f861d;color:white;font-size:13px;display:flex;justify-content:space-between;align-items:center;padding:2px 8px}
+
+.main{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:40px 95px minmax(0,1fr);overflow:hidden}
+.sections{background:#f7f7f7;border-right:1px solid #ccc;overflow:hidden}
+.sec{height:95px;font-size:11px;color:#555;text-align:center;padding-top:7px;border-bottom:1px solid #ddd}
+.sec:before{content:"";display:block;width:9px;height:55px;background:#6aa72b;border-radius:8px;margin:3px auto}
+.activeSec{background:#d9f0c1;color:#111;font-weight:bold}
+.palette{padding:8px 4px;overflow-y:auto;background:#fff}
+.qbtn{background:#6aa72b;color:white;width:36px;height:20px;margin:6px auto;border-radius:3px;text-align:center;line-height:20px;font-weight:bold;font-size:12px;cursor:pointer}
+.qbtn.active{clip-path:polygon(0 0,80% 0,100% 50%,80% 100%,0 100%)}
+.content{min-width:0;height:100%;overflow-y:auto;padding:18px 35px 28px 35px}
+
+.inst{background:#eaf8ff;width:90%;min-height:0;padding:14px 18px;border:1px solid #d8e7f3;white-space:normal}
+.inst div{margin:0;padding:0}
+.instruction{display:block;font-size:24px;line-height:1.25;font-weight:500}
+.subtitle{display:block;font-size:24px;line-height:1.25;margin:2px 0 0 0!important}
+.mainQuestion{
+  display:block;
+  font-size:24px;
+  line-height:1.4;
+  margin:6px 0 0 0!important;
+  font-weight:500;
+}
+.lang{margin-top:6px}
+.lang button{display:block;margin:6px 0;background:white;border:1px solid #aaa;padding:3px 8px;cursor:pointer}
+
+.image{display:none;margin:18px 0 14px 70px}
+.image{
+  display:none;
+  margin:18px 0 20px 70px;
+}
+
+.image img{
+  max-width:400px;
+  max-height:280px;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  display:block;
+  margin:0 auto;
+}
+#audioBox{display:none;margin:15px 0}
+#speakerBox{display:none;margin:15px 0 20px 30px}
+#speakerImg{max-width:180px;max-height:120px;object-fit:contain}
+
+/* TEXT OPTIONS: left aligned */
+#optionContainer{width:90%;max-width:1100px;margin:18px 0 0 0;padding-bottom:20px}
+.option{width:100%;min-height:58px;border:2px solid #111;background:#fff;cursor:pointer;display:flex;justify-content:flex-start;align-items:center;flex-direction:row;margin:0 0 12px 0;padding:10px 16px 10px 24px;transition:.15s;font-size:22px;font-weight:bold;text-align:left}
+.option:hover{background:#f2f2f2}
+.option.selected{background:#b7d88d;border-color:green}
+.option img{max-width:160px;max-height:110px;object-fit:contain;display:block;margin:auto}
+
+/* IMAGE OPTIONS: horizontal and left side */
+#optionContainer.imageOptions{width:90%;max-width:1150px;display:flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;gap:24px;flex-wrap:nowrap;margin:24px 0 0 0;padding-bottom:20px}
+#optionContainer.imageOptions .imageOption{width:220px;min-width:220px;max-width:220px;height:170px;min-height:170px;margin:0;padding:10px;border:2px solid #111;background:#fff;display:flex;justify-content:center;align-items:center;cursor:pointer;text-align:center}
+#optionContainer.imageOptions .imageOption.selected{background:#b7d88d;border-color:green}
+#optionContainer.imageOptions .imageOption img{width:180px;height:130px;max-width:180px;max-height:130px;object-fit:contain;display:block;margin:auto}
+
+.partBox{margin:0 0 20px 0}.partTitle{width:100%;background:#eaf8ff;padding:8px 15px;margin:14px 0 8px 0;font-size:22px;font-weight:bold;border-left:5px solid #6aa72b}.doubleOptionRow{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px}.doubleOption{width:180px;min-height:145px;margin:0;justify-content:center;align-items:center;text-align:center}.doubleOption img{width:140px;height:95px;object-fit:contain}
+
+.dialogWrap{width:100%;display:flex;justify-content:space-between;align-items:flex-start;margin:14px 0 14px 0}
+.dialogText{
+  flex:1 1 auto;
+  font-size:22px !important;
+  line-height:1.45 !important;
+  font-weight:500 !important;
+  white-space:normal !important;
+  text-align:left;
+}.dialogImage{width:160px;height:auto;object-fit:contain;margin:20px 30px 0 30px}.blankBox{display:inline-block;width:120px;height:30px;border:4px solid red;vertical-align:middle;margin:0 6px}
+
+.footer{height:47px;flex:0 0 47px;background:#050505;border-top:4px solid #4f861d;display:flex;justify-content:space-between;align-items:center;padding:0 12px}.footer button{background:#6aa72b;color:white;border:0;padding:10px 18px;font-weight:bold;border-radius:4px;cursor:pointer}.icons{color:white;font-size:25px}
+.modal{display:none;position:fixed;top:140px;left:50%;transform:translateX(-50%);width:610px;background:white;border:2px solid black;z-index:9999;box-shadow:0 0 18px rgba(0,0,0,.45)}.modal-head{background:black;color:white;padding:7px 10px;font-weight:bold}.close{float:right;cursor:pointer;font-size:16px}.modal table{width:100%;border-collapse:collapse;font-size:12px}.modal td{border:1px solid #555;padding:12px}.result-content{padding:20px;font-size:18px;line-height:32px}.result-content h2{margin-top:0;color:#4f861d}
+
+@media(max-width:900px){#optionContainer.imageOptions{flex-wrap:wrap}#optionContainer.imageOptions .imageOption{width:220px}}
+@media(max-width:800px){.inst,#optionContainer,.dialogWrap{width:100%;display:flex;justify-content:space-between;align-items:flex-start;margin:14px 0 14px 0}.content{padding:12px 16px 22px 16px}.instruction,.subtitle{display:block;font-size:24px;line-height:1.25;margin:2px 0 0 0!important}.mainQuestion{
+  display:block;
+  font-size:24px;
+  line-height:1.4;
+  margin:6px 0 0 0!important;
+  font-weight:500;
+}.dialogText{
+  flex:1 1 auto;
+  font-size:22px !important;
+  line-height:1.45 !important;
+  font-weight:500 !important;
+  white-space:normal !important;
+  text-align:left;
+}}
+.confirmYes,
+.confirmNo{
+  padding:10px 30px;
+  border:0;
+  border-radius:4px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-right:15px;
+  font-size:16px;
+}
+
+.confirmYes{
+  background:#6aa72b;
+  color:white;
+}
+
+.confirmNo{
+  background:#ddd;
+  color:#111;
+}
+.confirmYes,.confirmNo{
+  padding:10px 30px;
+  border:0;
+  border-radius:4px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-right:15px;
+}
+.confirmYes{background:#6aa72b;color:white;}
+.confirmNo{background:#ddd;color:#111;}
+#resultPage{
+    width:100%;
+    height:100vh;
+    background:white;
+}
+
+.resultHeader{
+    height:55px;
+    background:black;
+    color:white;
+    font-size:24px;
+    font-weight:bold;
+    padding:12px 25px;
+}
+
+.resultBody{
+    padding:40px;
+}
+
+.resultBody h1{
+    color:#4f861d;
+    font-size:48px;
+}
+/* TEXT OPTIONS INSIDE DOUBLE QUESTIONS: vertical + left side */
+.doubleOptionRow.verticalOptions{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  margin: 0 0 20px 0;
+  padding: 0;
+  gap: 14px;
+}
+
+.doubleOptionRow.verticalOptions .doubleOption{
+  width: 650px;
+  max-width: 100%;
+  min-height: 70px;
+  margin: 0;
+  padding: 10px 20px 10px 24px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  box-sizing: border-box;
+}
+/* Reading passage font size small */
+.passage,
+#passage,
+.readingPassage,
+.reading-passage,
+.dialogText{
+  flex:1 1 auto;
+  font-size:22px !important;
+  line-height:1.45 !important;
+  font-weight:500 !important;
+  white-space:normal !important;
+  text-align:left;
+}
+
+
+/* Final size fixes */
+.instruction, .subtitle{font-size:24px !important;line-height:1.25 !important;}
+.mainQuestion{font-size:24px !important;line-height:1.4 !important;}
+.dialogWrap{margin:14px 0 14px 0 !important;}
+.dialogText{font-size:22px !important;line-height:1.45 !important;white-space:normal !important;font-weight:500 !important;}
+.readingPassage{font-size:22px !important;line-height:1.6 !important;font-weight:500 !important;margin-bottom:20px !important;white-space:pre-wrap !important;text-align:left !important;}
+/* Only current section green, other sections gray */
+.sec{
+  background:#f2f2f2 !important;
+  color:#555 !important;
+  font-weight: normal !important;
+}
+
+.sec:before{
+  background:#bfbfbf !important;
+}
+
+.sec.activeSec{
+  background:#d9f0c1 !important;
+  color:#000 !important;
+  font-weight:bold !important;
+}
+
+.sec.activeSec:before{
+  background:#6aa72b !important;
+}
+.sections{
+  background:#eeeeee !important;
+}
+
+.sec{
+  border-bottom:1px solid #d0d0d0 !important;
+}
+#feedbackPage {
+  display: none;
+  background: #f4f4f4;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.feedback-top {
+  background: #000;
+  color: #fff;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feedback-top h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.exit-test-btn {
+  background: #ffd98c;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.green-line {
+  height: 18px;
+  background: #5b922a;
+}
+
+.feedback-box {
+  width: 92%;
+  margin: 18px auto;
+  background: white;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.feedback-title {
+  background: #000;
+  color: white;
+  padding: 14px;
+  font-weight: bold;
+}
+
+.feedback-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.feedback-table th,
+.feedback-table td {
+  border: 1px solid #d6d6d6;
+  padding: 14px 12px;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.feedback-table th {
+  background: #f1f1f1;
+  text-align: center;
+  font-weight: bold;
+}
+
+.feedback-table th span,
+.feedback-table td span {
+  font-size: 11px;
+  color: #000;
+}
+
+.correct-mark {
+  color: green;
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.wrong-mark {
+  color: blue;
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.feedback-answer-img {
+  width: 90px;
+  max-height: 80px;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+/* =========================================
+   MOBILE / TABLET RESPONSIVE DESIGN
+   ========================================= */
+
+*{
+  box-sizing:border-box;
+}
+
+html, body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+img{
+  max-width:100%;
+  height:auto;
+}
+
+/* ---------- Tablet ---------- */
+@media (max-width: 900px){
+
+  .top{
+    height:auto !important;
+    min-height:60px;
+    padding:8px 10px;
+    gap:8px;
+  }
+
+  #questionInfo{
+    font-size:13px;
+  }
+
+  .timer{
+    font-size:12px;
+  }
+
+  .finish{
+    padding:8px 12px !important;
+    font-size:12px;
+  }
+
+  .green{
+    height:auto !important;
+    min-height:24px;
+    font-size:11px !important;
+    flex-wrap:wrap;
+    gap:3px;
+  }
+
+  .main{
+    display:flex !important;
+    flex-direction:column;
+    height:auto !important;
+    min-height:calc(100vh - 140px);
+  }
+
+  /* Section tabs */
+  .sections{
+    display:flex;
+    width:100%;
+    overflow-x:auto;
+    border-right:none !important;
+    border-bottom:1px solid #ccc;
+    background:#f7f7f7;
+  }
+
+  .sec{
+    flex:1 0 120px;
+    height:55px !important;
+    min-width:120px;
+    padding:7px 4px !important;
+    font-size:11px !important;
+    border-right:1px solid #ddd;
+    border-bottom:none !important;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .sec::before{
+    display:none !important;
+  }
+
+  .activeSec{
+    background:#e6f3da !important;
+    border-bottom:4px solid #6aa72b !important;
+    font-weight:bold;
+  }
+
+  /* Question number palette */
+  .palette{
+    display:flex;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    width:100%;
+    padding:7px !important;
+    gap:6px;
+    background:white;
+    border-bottom:1px solid #ddd;
+  }
+
+  .qbtn{
+    flex:0 0 34px;
+    width:34px !important;
+    height:28px !important;
+    line-height:28px !important;
+    margin:0 !important;
+    font-size:13px !important;
+    text-align:center;
+  }
+
+  /* Main question area */
+  .content{
+    width:100%;
+    padding:15px !important;
+  }
+
+  .inst,
+  .instruction{
+    width:100% !important;
+    max-width:100%;
+    font-size:18px !important;
+    line-height:1.5;
+    padding:10px !important;
+  }
+
+  .mainQuestion{
+    font-size:20px !important;
+    line-height:1.6;
+    word-break:break-word;
+  }
+
+  .subtitle{
+    font-size:15px !important;
+  }
+
+  .image{
+    margin:15px auto !important;
+    text-align:center;
+    width:100%;
+  }
+
+  #questionImage{
+    max-width:90% !important;
+    max-height:260px;
+    object-fit:contain;
+  }
+
+  /* Options */
+  .option{
+    width:100% !important;
+    max-width:100%;
+    margin:10px 0 !important;
+    padding:13px 10px !important;
+    font-size:17px !important;
+    min-height:48px;
+    word-break:break-word;
+  }
+
+  .imageOptions{
+    width:100%;
+  }
+
+  .imageOption{
+    width:100% !important;
+  }
+
+  .imageOption img{
+    max-width:160px;
+    max-height:130px;
+    object-fit:contain;
+  }
+
+  /* Dialog */
+  .dialogWrap{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .dialogText{
+    width:100%;
+    font-size:18px !important;
+    line-height:1.6 !important;
+  }
+
+  .dialogImage{
+    max-width:180px !important;
+    height:auto;
+    margin:auto;
+  }
+
+  /* Double questions */
+  .partBox{
+    width:100%;
+    margin-bottom:25px;
+  }
+
+  .partTitle{
+    font-size:18px !important;
+    line-height:1.5;
+    margin-bottom:10px;
+  }
+
+  .doubleOptionRow{
+    display:flex !important;
+    flex-wrap:wrap;
+    gap:8px;
+    width:100%;
+  }
+
+  .doubleOption{
+    flex:1 1 150px;
+    min-width:120px;
+  }
+
+  .doubleOption img{
+    max-width:140px;
+    max-height:120px;
+    object-fit:contain;
+  }
+
+  .verticalOptions{
+    display:flex !important;
+    flex-direction:column;
+  }
+
+  .verticalOptions .doubleOption{
+    width:100% !important;
+    flex:auto;
+  }
+
+  /* Reading passage */
+  .readingPassage{
+    width:100% !important;
+    font-size:19px !important;
+    line-height:1.8 !important;
+    overflow-wrap:anywhere;
+  }
+
+  /* Audio */
+  #audioBox{
+    width:100%;
+    margin:10px 0;
+  }
+
+  #audioPlayer{
+    width:100% !important;
+    max-width:100%;
+  }
+
+  /* Footer */
+  .footer{
+    width:100%;
+    height:auto !important;
+    min-height:55px;
+    padding:7px 8px !important;
+    position:sticky;
+    bottom:0;
+    z-index:100;
+  }
+
+  .footer .icons{
+    font-size:18px !important;
+  }
+
+  .footer button{
+    padding:9px 12px !important;
+    font-size:13px !important;
+  }
+
+  /* Language modal */
+  .modal{
+    width:92% !important;
+    max-width:500px;
+    left:50% !important;
+    transform:translateX(-50%);
+    max-height:85vh;
+    overflow-y:auto;
+  }
+
+  .modal table{
+    width:100%;
+  }
+
+  .modal td{
+    padding:8px;
+    font-size:14px;
+  }
+}
+
+
+/* ---------- Phone ---------- */
+@media (max-width: 600px){
+
+  .top{
+    display:grid !important;
+    grid-template-columns:1fr auto;
+  }
+
+  #questionInfo{
+    font-size:11px;
+  }
+
+  .timer{
+    font-size:10px;
+  }
+
+  .finish{
+    grid-column:2;
+    grid-row:1 / span 2;
+    padding:7px 8px !important;
+  }
+
+  .green{
+    padding:4px 6px !important;
+    font-size:9px !important;
+  }
+
+  .green span{
+    width:100%;
+  }
+
+  .sections{
+    scrollbar-width:none;
+  }
+
+  .sections::-webkit-scrollbar,
+  .palette::-webkit-scrollbar{
+    display:none;
+  }
+
+  .sec{
+    flex:0 0 105px;
+    min-width:105px;
+    height:48px !important;
+    font-size:10px !important;
+  }
+
+  .palette{
+    flex-wrap:nowrap !important;
+    overflow-x:auto;
+  }
+
+  .qbtn{
+    flex:0 0 31px;
+    width:31px !important;
+    height:27px !important;
+    line-height:27px !important;
+  }
+
+  .content{
+    padding:10px !important;
+  }
+
+  .inst,
+  .instruction{
+    font-size:15px !important;
+  }
+
+  .mainQuestion{
+    font-size:18px !important;
+  }
+
+  .option{
+    font-size:16px !important;
+    min-height:50px;
+    display:flex;
+    align-items:center;
+  }
+
+  .dialogText{
+    font-size:16px !important;
+  }
+
+  .partTitle{
+    font-size:16px !important;
+  }
+
+  .readingPassage{
+    font-size:17px !important;
+  }
+
+  .doubleOptionRow{
+    flex-direction:column;
+  }
+
+  .doubleOption{
+    width:100% !important;
+    flex:auto;
+  }
+
+  .footer{
+    justify-content:space-between;
+  }
+
+  .footer button{
+    padding:9px 9px !important;
+    font-size:12px !important;
+  }
+
+  #flagBtn{
+    padding:9px !important;
+  }
+}
+/* =========================================
+   FIREBASE LOGIN + APPROVAL ACCESS GATE
+   ========================================= */
+.auth-hidden{display:none !important;}
+.auth-gate{
+  position:fixed;
+  inset:0;
+  z-index:50000;
+  background:#f3f6f0;
+  overflow:auto;
+  padding:32px 16px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+}
+.auth-card{
+  width:min(560px, 100%);
+  background:#fff;
+  border:1px solid #d9dfd5;
+  border-radius:14px;
+  box-shadow:0 12px 36px rgba(0,0,0,.12);
+  padding:28px;
+}
+.auth-brand{
+  display:inline-block;
+  background:#4f861d;
+  color:#fff;
+  font-weight:700;
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:13px;
+}
+.auth-card h1{margin:14px 0 6px;font-size:28px;color:#111;}
+.auth-card h2{margin:0;font-size:20px;}
+.auth-subtitle{margin:0 0 22px;color:#555;line-height:1.5;font-size:14px;}
+.auth-card label{display:block;font-size:13px;font-weight:700;margin:13px 0 6px;}
+.auth-card input{
+  width:100%;
+  border:1px solid #bfc7bb;
+  border-radius:8px;
+  padding:12px 13px;
+  font-size:16px;
+  outline:none;
+}
+.auth-card input:focus{border-color:#4f861d;box-shadow:0 0 0 3px rgba(79,134,29,.12);}
+.auth-actions{display:flex;gap:10px;margin-top:18px;}
+.auth-primary,.auth-secondary,.auth-link-btn,.approve-btn,.reject-btn{
+  border:0;
+  border-radius:8px;
+  padding:11px 16px;
+  font-weight:700;
+  cursor:pointer;
+}
+.auth-primary{background:#4f861d;color:#fff;}
+.auth-secondary{background:#e8ece5;color:#222;}
+.auth-link-btn{background:transparent;color:#4f861d;padding-left:0;margin-top:8px;}
+.auth-primary:disabled,.auth-secondary:disabled,.auth-link-btn:disabled{opacity:.55;cursor:not-allowed;}
+.compact{padding:8px 12px;font-size:12px;}
+.auth-message{min-height:22px;margin-top:16px;font-size:13px;line-height:1.4;}
+.auth-message.error{color:#b42318;}
+.auth-message.success{color:#16713b;}
+.auth-message.info{color:#475467;}
+.user-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid #eee;}
+.small-label{font-size:12px;color:#666;margin-bottom:3px;}
+.approval-status{margin-top:20px;padding:14px;border-radius:9px;font-weight:800;}
+.approval-status.pending{background:#fff4d6;color:#7a5100;border:1px solid #f0d894;}
+.approval-status.approved{background:#e8f6e3;color:#266511;border:1px solid #b9dda8;}
+.approval-status.rejected{background:#fde8e8;color:#9a1d1d;border:1px solid #f3b7b7;}
+.approval-status.not-requested{background:#eef2f6;color:#344054;border:1px solid #d0d5dd;}
+.approval-help{color:#555;line-height:1.5;font-size:14px;}
+.admin-title-row{display:flex;align-items:center;gap:10px;margin:20px 0 10px;}
+.count-badge{display:inline-flex;min-width:26px;height:26px;align-items:center;justify-content:center;background:#4f861d;color:white;border-radius:999px;font-size:12px;font-weight:800;}
+.request-list{display:flex;flex-direction:column;gap:10px;}
+.request-row{border:1px solid #ddd;border-radius:9px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.request-meta{display:flex;flex-direction:column;min-width:0;}
+.request-meta strong{word-break:break-all;}
+.request-meta span{font-size:11px;color:#667085;margin-top:4px;}
+.request-actions{display:flex;gap:7px;flex-shrink:0;}
+.approve-btn{background:#4f861d;color:#fff;padding:8px 11px;}
+.reject-btn{background:#f1f1f1;color:#8b1d1d;padding:8px 11px;}
+.empty-state{padding:20px;text-align:center;color:#667085;background:#f8f9f8;border-radius:8px;}
+@media(max-width:600px){
+  .auth-card{padding:20px;}
+  .auth-card h1{font-size:23px;}
+  .auth-actions,.request-row{flex-direction:column;align-items:stretch;}
+  .request-actions{width:100%;}
+  .approve-btn,.reject-btn{flex:1;}
+}
+#appShell{
+  width:100%;
+  height:100%;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
+
+
+/* =========================================================
+   FINAL MOBILE FIX — 2026-08-14
+   Keeps all 3 options visible/scrollable and tappable.
+   Also preserves the Firebase approval gate on mobile.
+   ========================================================= */
+
+/* Never allow mobile layout rules to reveal the test before approval. */
+#appShell.auth-hidden {
+  display: none !important;
+}
+
+#appShell:not(.auth-hidden) {
+  display: flex !important;
+}
+
+@media (max-width: 900px) {
+  html,
+  body {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* The approved test occupies exactly the visible mobile viewport. */
+  #appShell:not(.auth-hidden) {
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    flex-direction: column !important;
+  }
+
+  #appShell .top,
+  #appShell .green,
+  #appShell .footer {
+    flex: 0 0 auto !important;
+  }
+
+  #appShell .main {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #appShell .sections,
+  #appShell .palette {
+    flex: 0 0 auto !important;
+  }
+
+  /* Only the question area scrolls. This prevents Option C being hidden by footer. */
+  #appShell .content {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    position: relative !important;
+    z-index: 1 !important;
+    padding-bottom: 30px !important;
+  }
+
+  /* Old responsive rule made normal text options a flex container. */
+  #appShell #optionContainer:not(.imageOptions) {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-bottom: 18px !important;
+  }
+
+  #appShell #optionContainer:not(.imageOptions) .option {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex: none !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    position: relative !important;
+    z-index: 2 !important;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: rgba(79, 134, 29, 0.18);
+  }
+
+  #appShell .option.selected {
+    background: #b7d88d !important;
+    border-color: green !important;
+  }
+
+  /* Footer stays in the flex layout and never overlays answers. */
+  #appShell .footer {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    min-height: 52px !important;
+    z-index: 100 !important;
+    padding-bottom: max(7px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #appShell .content {
+    padding: 9px 10px 24px !important;
+  }
+
+  #appShell .inst {
+    margin-bottom: 4px !important;
+  }
+
+  #appShell .lang {
+    margin-top: 4px !important;
+  }
+
+  #appShell .image {
+    width: 100% !important;
+    margin: 7px auto 9px !important;
+  }
+
+  #appShell #questionImage {
+    display: block !important;
+    max-width: 88% !important;
+    max-height: 200px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    margin: 0 auto !important;
+  }
+
+  #appShell #optionContainer:not(.imageOptions) {
+    margin-top: 8px !important;
+    padding-bottom: 16px !important;
+  }
+
+  #appShell #optionContainer:not(.imageOptions) .option {
+    min-height: 47px !important;
+    margin: 7px 0 !important;
+    padding: 10px 14px !important;
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Image-answer questions stay usable on narrow phones. */
+  #appShell #optionContainer.imageOptions {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    overflow: visible !important;
+  }
+
+  #appShell #optionContainer.imageOptions .imageOption {
+    width: calc(50% - 5px) !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 135px !important;
+    min-height: 135px !important;
+    margin: 0 !important;
+    padding: 7px !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+
+  #appShell #optionContainer.imageOptions .imageOption img {
+    width: 100% !important;
+    height: 110px !important;
+    max-width: 100% !important;
+    max-height: 110px !important;
+    object-fit: contain !important;
+  }
+}
+
+
+/* =========================================
+   SCREEN-CAPTURE DETERRENCE + WATERMARK
+   Note: browsers cannot fully block OS-level screenshots/recording.
+   ========================================= */
+#appShell{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+
+#appShell img{
+  -webkit-user-drag:none;
+  user-drag:none;
+}
+
+.security-watermark{
+  position:fixed;
+  inset:-8vh -8vw;
+  z-index:1200;
+  pointer-events:none;
+  display:none;
+  grid-template-columns:repeat(4, minmax(220px, 1fr));
+  grid-auto-rows:120px;
+  align-items:center;
+  justify-items:center;
+  gap:34px 20px;
+  overflow:hidden;
+  opacity:.16;
+  transform:rotate(-22deg) scale(1.06);
+  transform-origin:center;
+}
+
+.security-watermark span{
+  display:block;
+  max-width:320px;
+  color:#111;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.2px;
+  white-space:nowrap;
+  text-align:center;
+  text-shadow:0 0 1px rgba(255,255,255,.55);
+}
+
+.capture-mask{
+  position:fixed;
+  inset:0;
+  z-index:49000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:#0b0b0b;
+  color:#fff;
+  padding:24px;
+  text-align:center;
+  pointer-events:all;
+}
+
+.capture-mask.show{display:flex;}
+
+.capture-mask-card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:9px;
+  max-width:360px;
+}
+
+.capture-mask-icon{font-size:42px;}
+.capture-mask-card strong{font-size:20px;}
+.capture-mask-card span{font-size:13px;color:#d0d0d0;line-height:1.5;}
+
+#appShell.capture-obscured > :not(#captureMask):not(#securityWatermark){
+  filter:blur(28px) brightness(.08);
+  opacity:.06;
+  pointer-events:none !important;
+}
+
+@media (max-width:600px){
+  .security-watermark{
+    grid-template-columns:repeat(2, minmax(170px, 1fr));
+    grid-auto-rows:105px;
+    gap:24px 8px;
+    opacity:.14;
+  }
+  .security-watermark span{font-size:10px;}
+}
+
+@media print{
+  #appShell,
+  #authGate{
+    display:none !important;
+  }
+  body::before{
+    content:'Printing is disabled for the Miraisen JFT Mock Test.';
+    display:block;
+    padding:40px;
+    font:700 22px Arial,sans-serif;
+  }
+}

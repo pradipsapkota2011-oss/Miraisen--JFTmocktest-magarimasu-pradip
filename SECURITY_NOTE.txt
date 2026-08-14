@@ -1,0 +1,8 @@
+SECURITY NOTE
+=============
+यो edition Cloud Functions बिना चल्ने गरी बनाइएको हो।
+त्यसैले grading answer key (answer-key-client.js) browser बाट technically inspect गर्न सकिन्छ,
+र advanced user ले client-side result tamper गर्ने सम्भावना पूर्ण रूपमा रोक्न सकिँदैन।
+
+यसको फाइदा: Spark/Firestore setup मा सजिलो, Cloud Functions deploy गर्नु पर्दैन।
+Stronger exam security चाहियो भने पछि Cloud Functions server-side grading version प्रयोग गर्नुहोस्।

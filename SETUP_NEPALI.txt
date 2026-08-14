@@ -1,0 +1,81 @@
+MIRAISEN JFT MOCK TEST — FINAL FIRESTORE APPROVAL VERSION
+========================================================
+
+यो version मा Cloud Functions प्रयोग हुँदैन।
+Flow:
+Student Request Access -> PENDING -> Admin APPROVE -> Student Login -> index.html Mock Test खुल्छ।
+
+IMPORTANT: यो ZIP मा index.html / images / audio छैन।
+यी files लाई तपाईंको अहिलेको JFT Mock Test को SAME FOLDER मा copy/replace गर्नुहोस्।
+अहिलेको index.html, audio, images आदि delete नगर्नुहोस्।
+
+COPY/REPLACE THESE FILES:
+- login.html
+- admin.html
+- firebase-config.js
+- firebase-security.js
+- answer-key-client.js
+- script.js
+- questions.js
+- firestore.rules
+- firestore.indexes.json
+- firebase.json
+
+FIREBASE CONSOLE SETUP (ONE TIME)
+---------------------------------
+1) Authentication:
+   - Email/Password = Enabled
+   - Google = Enabled
+
+2) Firestore Database:
+   - Firebase Console -> Firestore Database -> Create database
+   - Database create गर्नुहोस्।
+
+3) Firestore Rules:
+   - Firebase Console -> Firestore Database -> Rules
+   - यो package को firestore.rules खोल्नुहोस्
+   - पूरा code copy गरेर Rules मा paste गर्नुहोस्
+   - Publish थिच्नुहोस्
+
+LOCAL TEST
+----------
+CMD लाई project folder भित्र खोल्नुहोस्:
+
+python -m http.server 5500
+
+CMD बन्द नगर्नुहोस्। Chrome मा:
+http://localhost:5500/login.html
+
+STUDENT TEST
+------------
+A) नयाँ student:
+   Request Access -> Name/Email/Password -> Create Account
+   status PENDING हुन्छ।
+
+B) Firebase Authentication मा पहिले नै बनेको Email/Password student:
+   पहिलो Login गर्दा users collection मा PENDING request स्वतः बन्छ।
+
+ADMIN APPROVAL
+--------------
+login.html को "Admin Sign in with Google" प्रयोग गर्नुहोस्।
+Admin Gmail: miraisen2657@gmail.com
+Dashboard मा student देखिन्छ -> APPROVE थिच्नुहोस्।
+
+APPROVED STUDENT
+----------------
+Student ले Email + Password -> Login & Start Mock Test थिच्दा
+index.html तुरुन्त खुल्छ।
+
+RESULT HISTORY
+--------------
+Test Submit भएपछि testAttempts collection मा score/history save हुन्छ।
+Admin Dashboard मा Gmail, date, score, PASS/FAIL, correct/wrong आदि देखिन्छ।
+
+यदि "permission denied" आयो भने Firestore Rules Publish भएको छ कि छैन जाँच्नुहोस्।
+
+
+=== V2 IMPORTANT FIX ===
+पुरानो Firebase Authentication account भए पनि Request Access tab बाट त्यही Email/Password प्रयोग गरेर request पठाउन सकिन्छ।
+Request Firestore मा users/{UID} document को रूपमा PENDING save हुन्छ।
+यदि Admin मा request नदेखिए: student ले Request Access tab प्रयोग गर्नुहोस्, success message आएपछि Admin Dashboard > Refresh Requests थिच्नुहोस्।
+

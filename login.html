@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Miraisen JFT Mock Test Login</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef1f3;color:#111;min-height:100vh;display:grid;place-items:center;padding:20px}.card{width:min(520px,100%);background:#fff;border:1px solid #d7d7d7;border-radius:18px;box-shadow:0 12px 38px rgba(0,0,0,.14);overflow:hidden}.head{background:#101010;color:#fff;padding:28px}.head h1{margin:0 0 6px;font-size:29px}.head p{margin:0;color:#ddd;font-size:15px}.body{padding:28px}.tabs{display:flex;gap:10px;margin-bottom:18px}.tabs button{flex:1;padding:12px;border:1px solid #ccc;background:#f6f6f6;border-radius:8px;cursor:pointer;font-weight:800;font-size:15px}.tabs button.active{background:#5b922b;color:#fff;border-color:#5b922b}.note{font-size:14px;color:#444;line-height:1.5;margin:0 0 14px}label{display:block;font-size:14px;font-weight:800;margin:13px 0 6px}input{width:100%;padding:13px;border:1px solid #aaa;border-radius:8px;font-size:16px}.primary,.google{width:100%;padding:13px;border-radius:8px;font-weight:800;cursor:pointer;font-size:16px;margin-top:18px}.primary{border:0;background:#5b922b;color:#fff}.primary:disabled,.google:disabled{opacity:.55;cursor:not-allowed}.google{background:#fff;border:2px solid #222;color:#111}.links{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap}.links button,.links a{border:0;background:none;padding:0;color:#1259a7;text-decoration:underline;cursor:pointer;font-size:13px}#message,#firebaseStatus{display:none;margin:14px 0 0;padding:11px 12px;border-radius:8px;font-size:14px;line-height:1.5}.danger{display:block!important;background:#fff0f0;border:1px solid #efbbbb;color:#8d0000}.success{display:block!important;background:#effbea;border:1px solid #b9e2aa;color:#255d16}.info{display:block!important;background:#eef5ff;border:1px solid #bfd7ff;color:#173d68}#registerFields,#confirmPasswordField{display:none}.small{font-size:12px;color:#666;line-height:1.5;margin-top:14px}.admin-box{margin-top:18px;padding-top:15px;border-top:1px solid #ddd}.admin-box p{margin:0 0 9px;font-size:13px;color:#666}.admin-box .google{margin-top:0}.statusDot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#999;margin-right:6px}
+</style>
+</head>
+<body>
+<div class="card"><div class="head"><h1>JFT Mock Test</h1><p>Miraisen secure access</p></div><div class="body">
+  <div class="tabs"><button id="loginTab" class="active" type="button">Login</button><button id="registerTab" type="button">Request Access</button></div>
+  <div id="modeNote" class="note">Approved student ले Email र Password प्रयोग गरेर Login गर्नुहोस्।</div>
+  <div id="message"></div>
+  <form id="authForm">
+    <div id="registerFields"><label for="username">Full Name</label><input id="username" autocomplete="name" maxlength="60"></div>
+    <label for="email">Email</label><input id="email" type="email" autocomplete="email" required>
+    <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" minlength="8" required>
+    <div id="confirmPasswordField"><label for="confirmPassword">Confirm Password</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="8"></div>
+    <button class="primary" id="submitBtn" type="submit">Login & Start Mock Test</button>
+  </form>
+  <div class="links"><button id="forgotBtn" type="button">Forgot password?</button><a href="admin.html">Admin Dashboard</a></div>
+  <div class="small">Request Access गर्दा account PENDING हुन्छ। Miraisen Admin ले APPROVE गरेपछि यही Email र Password बाट Login गर्दा index.html Mock Test तुरुन्त खुल्छ।</div>
+  <div class="admin-box">
+    <p><b>Miraisen Admin (miraisen2657@gmail.com)</b> का लागि:</p>
+    <button class="google" id="adminGoogleBtn" type="button">Admin Sign in with Google</button>
+    <div id="firebaseStatus" class="info"><span class="statusDot"></span><span id="firebaseStatusText">Firebase जाँच हुँदैछ...</span></div>
+  </div>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+  const $=id=>document.getElementById(id); let mode='login';
+  let auth=null, db=null, cfg=null;
+  let ADMIN_EMAIL='miraisen2657@gmail.com', ADMIN_PAGE='admin.html', TEST_PAGE='index.html';
+  let firebaseInitPromise=null;
+
+  function msg(text,kind='info'){const b=$('message');b.textContent=text;b.className=kind;b.style.display='block';}
+  function setStatus(text,kind='info'){const b=$('firebaseStatus');b.className=kind;b.style.display='block';$('firebaseStatusText').textContent=text;}
+  function friendly(err){
+    const code=String(err&&err.code||''); const map={
+      'auth/popup-blocked':'Browser ले Google popup block गरेको छ। Popup Allow गर्नुहोस्।',
+      'auth/popup-closed-by-user':'Google login popup बन्द भयो। फेरि प्रयास गर्नुहोस्।',
+      'auth/unauthorized-domain':'यो domain Firebase Authentication > Authorized domains मा add गरिएको छैन।',
+      'auth/operation-not-allowed':'Firebase Authentication मा Google वा Email/Password provider enable गरिएको छैन।',
+      'auth/network-request-failed':'Internet/Firebase connection problem भयो।',
+      'auth/invalid-credential':'Email वा Password मिलेन।',
+      'auth/wrong-password':'Email वा Password मिलेन।',
+      'auth/user-not-found':'Email वा Password मिलेन।',
+      'auth/email-already-in-use':'यो Email पहिले नै register भएको छ। Login गर्नुहोस्।',
+      'permission-denied':'Firestore permission denied. firestore.rules Publish गरिएको छ कि छैन जाँच्नुहोस्।',
+      'firestore/permission-denied':'Firestore permission denied. Firebase Console > Firestore Database > Rules मा ZIP को firestore.rules paste गरेर Publish गर्नुहोस्।',
+      'firestore/unavailable':'Firestore अहिले उपलब्ध छैन। Internet connection जाँचेर फेरि प्रयास गर्नुहोस्।',
+      'firestore/failed-precondition':'Firestore setup पूरा भएको छैन। Firestore Database create गरिएको छ कि छैन जाँच्नुहोस्।'
+    }; return map[code]||(err&&err.message)||String(err)||'Unknown error';
+  }
+
+  window.setAuthMode=function(next){mode=next==='register'?'register':'login';
+    $('loginTab').classList.toggle('active',mode==='login');$('registerTab').classList.toggle('active',mode==='register');
+    $('registerFields').style.display=mode==='register'?'block':'none';$('confirmPasswordField').style.display=mode==='register'?'block':'none';
+    $('username').required=mode==='register';$('confirmPassword').required=mode==='register';$('password').autocomplete=mode==='register'?'new-password':'current-password';
+    $('submitBtn').textContent=mode==='register'?'Create Account & Send Access Request':'Login & Start Mock Test';
+    $('modeNote').textContent=mode==='register'?'Full Name, Email र Password राखेर Mock Test access request पठाउनुहोस्।':'Approved student ले Email र Password प्रयोग गरेर Login गर्नुहोस्।';
+    $('message').style.display='none';
+  };
+  $('loginTab').onclick=()=>window.setAuthMode('login'); $('registerTab').onclick=()=>window.setAuthMode('register');
+
+  function extractObject(text,name){
+    const re=new RegExp('export\\s+const\\s+'+name+'\\s*=\\s*({[\\s\\S]*?})\\s*;'); const m=text.match(re); if(!m) throw new Error(name+' firebase-config.js मा भेटिएन।');
+    return Function('"use strict";return ('+m[1]+')')();
+  }
+  function extractString(text,name,fallback){const re=new RegExp('export\\s+const\\s+'+name+'\\s*=\\s*["\\\']([^"\\\']+)["\\\']');const m=text.match(re);return m?m[1]:fallback;}
+
+  async function initFirebase(){
+    if(firebaseInitPromise) return firebaseInitPromise;
+    firebaseInitPromise=(async()=>{
+      setStatus('Firebase configuration जाँच हुँदैछ...','info');
+      if(location.protocol==='file:') throw new Error('login.html लाई double-click गरेर होइन, http://localhost:5500 बाट खोल्नुहोस्।');
+      if(typeof firebase==='undefined') throw new Error('Firebase SDK load भएन। Internet connection जाँच्नुहोस्।');
+      const res=await fetch('./firebase-config.js',{cache:'no-store'}); if(!res.ok) throw new Error('firebase-config.js load हुन सकेन (HTTP '+res.status+').');
+      const text=await res.text(); cfg=extractObject(text,'firebaseConfig');
+      TEST_PAGE=extractString(text,'TEST_PAGE','index.html'); ADMIN_PAGE=extractString(text,'ADMIN_PAGE','admin.html'); ADMIN_EMAIL=extractString(text,'ADMIN_EMAIL','miraisen2657@gmail.com');
+      if(!cfg.apiKey||String(cfg.apiKey).includes('PASTE_')||!cfg.projectId||String(cfg.projectId).includes('PASTE_')) throw new Error('firebase-config.js मा वास्तविक Firebase config छैन।');
+      if(!firebase.apps.length) firebase.initializeApp(cfg); auth=firebase.auth(); db=firebase.firestore();
+      setStatus('Firebase ready — Login / Admin Approval चल्छ।','success'); return true;
+    })().catch(e=>{setStatus(friendly(e),'danger');throw e;});
+    return firebaseInitPromise;
+  }
+  initFirebase().catch(()=>{});
+
+  async function ensurePendingUser(user, usernameOverride=''){
+    if(!user) throw new Error('Login user भेटिएन।');
+    // Refresh the ID token first so Firestore rules see the current authenticated user.
+    await user.getIdToken(true);
+    const ref=db.collection('users').doc(user.uid);
+    const snap=await ref.get();
+    if(snap.exists) return {id:snap.id,...snap.data()};
+
+    // IMPORTANT: use the exact Firebase Auth email (do not lowercase it before
+    // writing) because Firestore Rules compare it to request.auth.token.email.
+    const email=String(user.email||'').trim();
+    if(!email) throw new Error('Firebase account मा Email भेटिएन।');
+    const username=String(usernameOverride||user.displayName||(email?email.split('@')[0]:'Student')).trim()||'Student';
+    const data={
+      uid:user.uid,
+      username,
+      displayName:username,
+      email,
+      accessStatus:'pending',
+      requestedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      accessUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+    await ref.set(data);
+    const verify=await ref.get();
+    if(!verify.exists) throw new Error('Access request Firestore मा save हुन सकेन।');
+    return {id:verify.id,...verify.data()};
+  }
+
+  $('adminGoogleBtn').onclick=async function(){
+    const btn=this; btn.disabled=true; btn.textContent='Opening Google Sign-In...'; msg('Admin Google Sign-In सुरु हुँदैछ...','info');
+    try{
+      await initFirebase(); const provider=new firebase.auth.GoogleAuthProvider(); provider.setCustomParameters({prompt:'select_account'});
+      const cred=await auth.signInWithPopup(provider); const email=String(cred.user&&cred.user.email||'').toLowerCase();
+      if(email!==ADMIN_EMAIL.toLowerCase()){await auth.signOut();throw new Error('Admin access केवल '+ADMIN_EMAIL+' का लागि हो। तपाईंले '+(email||'another account')+' छान्नुभयो।');}
+      msg('Admin login successful. Dashboard खोल्दैछ...','success'); location.href=ADMIN_PAGE;
+    }catch(e){msg(friendly(e),'danger');}
+    finally{btn.disabled=false;btn.textContent='Admin Sign in with Google';}
+  };
+
+  $('authForm').onsubmit=async function(e){
+    e.preventDefault(); const btn=$('submitBtn');btn.disabled=true;
+    try{
+      await initFirebase(); const email=$('email').value.trim().toLowerCase(),password=$('password').value,username=$('username').value.trim(),confirm=$('confirmPassword').value;
+      if(mode==='register'){
+        if(username.length<2)throw new Error('Full Name कम्तीमा 2 characters राख्नुहोस्।');
+        if(password.length<8)throw new Error('Password कम्तीमा 8 characters राख्नुहोस्।');
+        if(password!==confirm)throw new Error('Password र Confirm Password मिलेन।');
+        msg('Access request Firestore मा save हुँदैछ...','info');
+        let cred;
+        try{
+          cred=await auth.createUserWithEmailAndPassword(email,password);
+          await cred.user.updateProfile({displayName:username});
+        }catch(createErr){
+          // Existing Firebase Auth users can also send a request from this tab.
+          if(String(createErr&&createErr.code||'')==='auth/email-already-in-use'){
+            cred=await auth.signInWithEmailAndPassword(email,password);
+            if(username && username!==cred.user.displayName){
+              try{await cred.user.updateProfile({displayName:username});}catch(_){}
+            }
+          }else throw createErr;
+        }
+        const profile=await ensurePendingUser(cred.user,username);
+        const st=String(profile.accessStatus||'pending').toLowerCase();
+        await auth.signOut();
+        window.setAuthMode('login'); $('email').value=email; $('password').value='';
+        if(st==='approved') msg('यो account पहिले नै APPROVED छ। अब यही Email र Password बाट Login & Start Mock Test गर्नुहोस्।','success');
+        else if(st==='rejected') msg('यो account को पुरानो request REJECT गरिएको छ। Admin लाई सम्पर्क गर्नुहोस्।','danger');
+        else if(st==='revoked') msg('यो account को access REVOKE गरिएको छ। Admin लाई सम्पर्क गर्नुहोस्।','danger');
+        else msg('Access request Firestore मा सफलतापूर्वक PENDING save भयो। अब Admin Dashboard मा Refresh Requests थिच्दा यो Email देखिन्छ।','success');
+      }else{
+        msg('Login जाँच हुँदैछ...','info');
+        const cred=await auth.signInWithEmailAndPassword(email,password);
+        if(String(cred.user.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()){location.href=ADMIN_PAGE;return;}
+        let profile=await ensurePendingUser(cred.user);
+        const st=String(profile.accessStatus||'pending').toLowerCase();
+        if(st==='approved'){ location.href=TEST_PAGE; return; }
+        await auth.signOut();
+        msg(st==='rejected'?'Access REJECT गरिएको छ।':st==='revoked'?'Access REVOKE गरिएको छ।':'Login सही छ। तपाईंको PENDING request Firestore मा save भएको छ। Admin Dashboard मा Refresh Requests थिचेर APPROVE गर्नुहोस्।','info');
+      }
+    }catch(e){try{if(auth&&auth.currentUser)await auth.signOut();}catch(_){}msg(friendly(e),'danger');}
+    finally{btn.disabled=false;btn.textContent=mode==='register'?'Create Account & Send Access Request':'Login & Start Mock Test';}
+  };
+
+  $('forgotBtn').onclick=async()=>{try{await initFirebase();const email=$('email').value.trim();if(!email)throw new Error('पहिले Email लेख्नुहोस्।');await auth.sendPasswordResetEmail(email);msg('Password reset link Email मा पठाइएको छ।','success');}catch(e){msg(friendly(e),'danger');}};
+})();
+</script>
+</body></html>
