@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Miraisen JFT Mock Test</title>
+<link rel="stylesheet" href="style.css?v=20260814-final-2">
+</head>
+<body>
+<noscript><div style="padding:20px;font-family:Arial,sans-serif;">JavaScript is required to use the Miraisen JFT Mock Test.</div></noscript>
+
+<!-- LOGIN / APPROVAL GATE -->
+<div id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="auth-brand">Miraisen Language Center</div>
+    <h1>JFT Mock Test Access</h1>
+    <p class="auth-subtitle">Login with your Gmail/email and password. Mock test access starts only after Miraisen approval.</p>
+
+    <div id="loginView">
+      <label for="authEmail">Gmail / Email</label>
+      <input id="authEmail" type="email" autocomplete="email" placeholder="example@gmail.com">
+
+      <label for="authPassword">Password</label>
+      <input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimum 6 characters">
+
+      <div class="auth-actions">
+        <button id="loginBtn" class="auth-primary" type="button">Login</button>
+        <button id="signupBtn" class="auth-secondary" type="button">Create Account</button>
+      </div>
+      <button id="forgotBtn" class="auth-link-btn" type="button">Forgot password?</button>
+    </div>
+
+    <div id="studentView" class="auth-hidden">
+      <div class="user-row">
+        <div>
+          <div class="small-label">Signed in as</div>
+          <strong id="studentEmail"></strong>
+        </div>
+        <button id="studentLogoutBtn" class="auth-secondary compact" type="button">Logout</button>
+      </div>
+      <div id="approvalStatus" class="approval-status pending">Checking approval...</div>
+      <p id="approvalHelp" class="approval-help"></p>
+      <button id="requestAccessBtn" class="auth-primary auth-hidden" type="button">Request Mock Test Access</button>
+    </div>
+
+    <div id="adminView" class="auth-hidden">
+      <div class="user-row">
+        <div>
+          <div class="small-label">Administrator</div>
+          <strong id="adminEmail"></strong>
+        </div>
+        <button id="adminLogoutBtn" class="auth-secondary compact" type="button">Logout</button>
+      </div>
+
+      <div class="admin-title-row">
+        <h2>Pending Requests</h2>
+        <span id="pendingCount" class="count-badge">0</span>
+      </div>
+      <div id="adminRequests" class="request-list">
+        <div class="empty-state">Loading requests...</div>
+      </div>
+    </div>
+
+    <div id="authMessage" class="auth-message" aria-live="polite"></div>
+  </div>
+</div>
+
+<!-- MOCK TEST APP: hidden until approved -->
+<div id="appShell" class="auth-hidden">
+<div id="securityWatermark" class="security-watermark" aria-hidden="true"></div>
+<div id="captureMask" class="capture-mask" aria-live="polite">
+  <div class="capture-mask-card">
+    <div class="capture-mask-icon">🔒</div>
+    <strong>Screen capture is restricted</strong>
+    <span>Return to the mock test to continue.</span>
+  </div>
+</div>
+<div class="top">
+  <div id="questionInfo"><b>Question: 1</b><br><b>Section: Script and Vocabulary</b></div>
+  <div class="timer">◴ Section Time Remaining<br><b id="time">60:00</b></div>
+  <button class="finish">Finish Section</button>
+</div>
+
+<div class="green">
+  <span>Test: Japan Foundation Test for Basic Japanese</span>
+  <span>Candidate: Miraisen Language Center &nbsp; | &nbsp; <span id="sessionUserEmail"></span> &nbsp; <button id="testLogoutBtn" type="button" style="background:#fff;color:#355f16;border:0;border-radius:4px;padding:3px 7px;font-weight:bold;cursor:pointer;">Logout</button></span>
+</div>
+
+<div class="main">
+
+  <div class="sections">
+    <div id="sec1" class="sec activeSec">Script &<br>Vocabulary</div>
+    <div id="sec2" class="sec">Conversation<br>& Expression</div>
+    <div id="sec3" class="sec">Listening</div>
+    <div id="sec4" class="sec">Reading</div>
+  </div>
+
+  <div class="palette" id="palette"></div>
+
+  <div class="content">
+    <div class="inst" id="questionText"></div>
+
+    <div class="lang">
+      <button onclick="openLanguage1()">🖼 Your Language 1 ↗</button>
+    </div>
+
+    <div class="image" id="questionImageBox">
+      <img id="questionImage" src="" alt="">
+    </div>
+
+    <div id="audioBox">
+      <audio id="audioPlayer" controls preload="auto">
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+
+    <div id="speakerBox">
+      <img id="speakerImg" src="" alt="">
+    </div>
+
+    <div id="optionContainer"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="icons">⚙ ▦</div>
+  <div>
+    <button id="flagBtn">⚑</button>
+    <button id="backBtn">‹ Back</button>
+    <button id="nextBtn">Next ›</button>
+  </div>
+</div>
+
+<div id="langModal1" class="modal">
+  <div class="modal-head">
+    Your Language 1
+    <span class="close" onclick="closeLanguage1()">×</span>
+  </div>
+
+  <table>
+    <tr>
+      <td><b>English</b></td>
+      <td>Look at the illustration and choose the correct word.</td>
+    </tr>
+    <tr>
+      <td><b>Nepali</b></td>
+      <td>चित्र हेरेर सही शब्द छान्नुहोस्।</td>
+    </tr>
+  </table>
+</div>
+<div id="submitConfirmBox" class="modal">
+  <div class="modal-head">
+    Submit Test
+    <span class="close" onclick="closeSubmitConfirm()">×</span>
+  </div>
+  <div class="result-content">
+    <h2>Do you want to submit the test?</h2>
+    <button onclick="submitTest()" class="confirmYes">Yes</button>
+    <button onclick="closeSubmitConfirm()" class="confirmNo">No</button>
+  </div>
+</div>
+<div id="resultPage" style="display:none">
+
+    <div class="resultHeader">
+        Test Result
+    </div>
+
+    <div class="resultBody">
+
+        <h1>Result</h1>
+
+        <p id="scoreText"></p>
+        <p id="correctText"></p>
+        <p id="wrongText"></p>
+        <p id="unansweredText"></p>
+        <p id="percentText"></p>
+
+        <button onclick="location.reload()">
+            Finish
+        </button>
+
+    </div>
+
+</div>
+</div>
+
+<script type="module" src="auth.js?v=20260814-final-2"></script>
+
+<script>
+(function(){
+  const appShell = document.getElementById('appShell');
+  const captureMask = document.getElementById('captureMask');
+  const watermark = document.getElementById('securityWatermark');
+  const emailEl = document.getElementById('sessionUserEmail');
+  let maskTimer = null;
+  let lastMaskReason = '';
+
+  function testIsOpen(){
+    return !!appShell && !appShell.classList.contains('auth-hidden');
+  }
+
+  function safeEmail(){
+    const value = (emailEl && emailEl.textContent || '').trim();
+    return value || 'Miraisen Candidate';
+  }
+
+  function rebuildWatermark(){
+    if(!watermark) return;
+    const label = safeEmail();
+    const stamp = new Date().toLocaleString();
+    watermark.innerHTML = '';
+    for(let i=0;i<24;i++){
+      const item = document.createElement('span');
+      item.textContent = label + ' • ' + stamp;
+      watermark.appendChild(item);
+    }
+  }
+
+  function setProtectionVisible(show){
+    if(!watermark) return;
+    watermark.style.display = show ? 'grid' : 'none';
+    if(show) rebuildWatermark();
+  }
+
+  function showMask(reason, ms){
+    if(!testIsOpen() || !captureMask) return;
+    lastMaskReason = reason || '';
+    clearTimeout(maskTimer);
+    appShell.classList.add('capture-obscured');
+    captureMask.classList.add('show');
+    if(ms){
+      maskTimer = setTimeout(hideMask, ms);
+    }
+  }
+
+  function hideMask(){
+    clearTimeout(maskTimer);
+    if(!captureMask || !appShell) return;
+    captureMask.classList.remove('show');
+    appShell.classList.remove('capture-obscured');
+  }
+
+  function protectedTarget(target){
+    return testIsOpen() && target && appShell.contains(target);
+  }
+
+  // Disable common ways to copy/save/inspect/print the live test.
+  document.addEventListener('contextmenu', function(e){
+    if(protectedTarget(e.target)) e.preventDefault();
+  }, true);
+
+  document.addEventListener('dragstart', function(e){
+    if(protectedTarget(e.target)) e.preventDefault();
+  }, true);
+
+  document.addEventListener('selectstart', function(e){
+    if(protectedTarget(e.target)) e.preventDefault();
+  }, true);
+
+  document.addEventListener('copy', function(e){
+    if(protectedTarget(e.target)) e.preventDefault();
+  }, true);
+
+  document.addEventListener('cut', function(e){
+    if(protectedTarget(e.target)) e.preventDefault();
+  }, true);
+
+  document.addEventListener('keydown', function(e){
+    if(!testIsOpen()) return;
+
+    const key = String(e.key || '').toLowerCase();
+    const ctrl = e.ctrlKey || e.metaKey;
+    const blockedShortcut =
+      key === 'f12' ||
+      (ctrl && ['p','s','u','c','a'].includes(key)) ||
+      (ctrl && e.shiftKey && ['i','j','c'].includes(key));
+
+    if(blockedShortcut){
+      e.preventDefault();
+      e.stopPropagation();
+      showMask('shortcut', 900);
+      return false;
+    }
+
+    if(key === 'printscreen'){
+      e.preventDefault();
+      showMask('printscreen', 1400);
+      try {
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText('Screen capture is restricted for the Miraisen JFT Mock Test.');
+        }
+      } catch(err){}
+      return false;
+    }
+  }, true);
+
+  window.addEventListener('beforeprint', function(){
+    if(testIsOpen()) showMask('print', 0);
+  });
+  window.addEventListener('afterprint', function(){
+    if(testIsOpen()) hideMask();
+  });
+
+  // Obscure questions when the browser/tab loses focus or is backgrounded.
+  document.addEventListener('visibilitychange', function(){
+    if(!testIsOpen()) return;
+    if(document.hidden){
+      showMask('hidden', 0);
+    } else {
+      setTimeout(hideMask, 500);
+      rebuildWatermark();
+    }
+  });
+
+  window.addEventListener('blur', function(){
+    if(testIsOpen()) showMask('blur', 0);
+  });
+
+  window.addEventListener('focus', function(){
+    if(testIsOpen() && !document.hidden){
+      setTimeout(hideMask, 450);
+      rebuildWatermark();
+    }
+  });
+
+  // Keep watermark synced with login state/email.
+  if(emailEl){
+    new MutationObserver(rebuildWatermark).observe(emailEl, {childList:true, subtree:true, characterData:true});
+  }
+  if(appShell){
+    new MutationObserver(function(){
+      const open = testIsOpen();
+      setProtectionVisible(open);
+      if(!open) hideMask();
+    }).observe(appShell, {attributes:true, attributeFilter:['class']});
+  }
+
+  setProtectionVisible(testIsOpen());
+})();
+</script>
+
+</body>
+</html>
